@@ -183,9 +183,9 @@ def build_and_save_model():
     print('Model saved. Examples:')
     interesting_words = [
         'ciao',
-        'diocane',
-        'jules',
-        'comunismo',
+        'salutare',
+        'motorino',
+        'simpatia',
         'milano',
         'roma',
         'sgargapuffoparolainventata']
