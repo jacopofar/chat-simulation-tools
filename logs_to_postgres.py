@@ -152,13 +152,12 @@ CREATE TABLE IF NOT EXISTS chat_logs.relevant_groups(
 )
 ''')
 
-interesting_groups = config['output']['relevant_groups']
-
+interesting_groups = config['relevant_groups']
 sql = sa.sql.text('INSERT INTO chat_logs.relevant_groups VALUES (:group_id, :description)')
 
-for name, identifier in interesting_groups.items():
-    print(f'inserting group {name}: {identifier}')
-    conn.execute(sql, {"group_id": identifier, "description":name})
+for group in interesting_groups:
+    print(f"inserting group {group['description']}: {group['id']}")
+    conn.execute(sql, {"group_id": group['id'], "description":group['description']})
 
 conn.close()
 

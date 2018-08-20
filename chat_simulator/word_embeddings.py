@@ -142,7 +142,7 @@ def sentences_generator():
         curs.execute("""select * from chat_logs.tgcli where to_id IN (
             select id from chat_logs.relevant_groups
             where """
-                     + config['vector_filter']['where_clause']
+                     + config['vector_filter']['where_clause'] +
                      """
             ) ORDER BY to_id, timestamp""")
         for row in curs:
