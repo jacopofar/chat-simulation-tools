@@ -1,0 +1,29 @@
+[input]
+telegram_docker_folder = '/Users/john/Documents/tgdocker'
+adium_log = 'chat_logs/adium_chat_messages.tsv.bkp'
+intermediate_log = 'chat_logs/tsv_tg_chat.tsv'
+
+[output]
+postgres_connection_string = 'postgresql+psycopg2://postgres:mysecretpassword@localhost:5442/clogs'
+
+[database]
+dbname='clogs'
+port=5442
+user='postgres'
+host='localhost'
+password='mysecretpassword'
+
+[vector_filter]
+where_clause = """
+description IN ('football club', 'university', 'narnia expats')
+AND timestamp > '2017'
+"""
+
+[[relevant_groups]]
+description = 'football club'
+id =  28191746
+
+[[relevant_groups]]
+
+description = 'narnia expats'
+id =  104180691
