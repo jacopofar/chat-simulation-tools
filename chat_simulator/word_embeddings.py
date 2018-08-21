@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 from pathlib import Path
+import json
 import re
 import time
 from typing import Optional, Tuple
@@ -22,7 +23,8 @@ conn = psycopg2.connect(
     password=config['database']['password'])
 
 model_file = "chat_simulator/fasttext.model"
-# shameless copy from
+
+# NOTE: currently not used
 stopwords = [
     'a',
     'adesso',
@@ -114,7 +116,7 @@ stopwords = [
     'va',
     'vai',
     'voi'
-    ]
+]
 
 
 def text_to_tokens(text: str) -> [str]:
@@ -134,21 +136,44 @@ def text_to_tokens(text: str) -> [str]:
     # remove everything else
     text = ''.join(l for l in text if l.isalpha() or l in ' _')
     text = re.sub(' +', ' ', text)
-    return [x for x in text.split(' ') if len(x) > 0 and x not in stopwords]
+    return [x for x in text.split(' ') if len(x) > 0]
 
 
 def sentences_generator():
-    with conn.cursor(name='named cursor for tgcli', cursor_factory=psycopg2.extras.NamedTupleCursor) as curs:
+    for qa in qa_generator():
+        yield qa[3]
+
+
+def qa_generator():
+    """Generator which returns Q/A tuples.
+
+    Each tuple has an user, a group, a timestamp, the tokens and raw text.
+    Consecutive messages from the same user in the same group are aggregated.
+    """
+    with conn.cursor(name='named cursor for tgcli',
+                     cursor_factory=psycopg2.extras.NamedTupleCursor) as curs:
         curs.execute("""select * from chat_logs.tgcli where to_id IN (
             select id from chat_logs.relevant_groups
             where """
                      + config['vector_filter']['where_clause'] +
                      """
             ) ORDER BY to_id, timestamp""")
+        partial_text = []
+        raw_text = ''
+        last_user = None
         for row in curs:
             text = row.text
-            # replace relevant punctuation with tokens
-            yield text_to_tokens(text)
+            # either accumulate or discharge
+            if row.user_id == last_user:
+                raw_text += '\n' + text
+                partial_text += ['token_newline'] + text_to_tokens(text)
+            else:
+                if len(partial_text) > 0:
+                    yield (row.user_id, row.to_id, row.timestamp.isoformat(),
+                           partial_text, raw_text)
+                partial_text = text_to_tokens(text)
+                raw_text = text
+                last_user = row.user_id
 
 
 class SentencesIterator():
@@ -168,6 +193,18 @@ class SentencesIterator():
             return result
 
 
+def average_vector(model, tokens: [str]):
+    avg_vector = np.zeros((model.vector_size))
+    for t in tokens:
+        try:
+            avg_vector += model[t]
+        except KeyError:
+            print('cannot find vector for', t)
+
+    avg_vector = avg_vector / len(tokens)
+    return avg_vector
+
+
 def get_model():
     model = FastText.load(model_file)
     return model
@@ -177,7 +214,7 @@ def build_and_save_model():
     print('Connecting to the database...')
     sentences = SentencesIterator()
     print('Calculating the embeddings...')
-    model = FastText(sentences, size=50, window=10, min_count=3, workers=4)
+    model = FastText(sentences, size=100, window=10, min_count=3, workers=4)
     print('Saving the model...')
     model.save(model_file)
     print('Model saved. Examples:')
@@ -192,7 +229,31 @@ def build_and_save_model():
     for w in interesting_words:
         print('Words most similar to', w)
         print([sw[0] for sw in model.most_similar(w)])
+    return model
+
+
+def save_qa_couples_and_vectors():
+    model = get_model()
+    with open('qa_couples.json', 'w') as out:
+        prev_qa = None
+        for qa in qa_generator():
+            if prev_qa is None:
+                prev_qa = qa
+                continue
+            obj = {
+                'q_user_id': prev_qa[0],
+                'a_user_id': qa[0],
+                'group_id': prev_qa[1],
+                'ts': prev_qa[2],
+                'q': prev_qa[4],
+                'q_vector': average_vector(model, prev_qa[3]).tolist(),
+                'a': qa[4]
+            }
+            out.write(json.dumps(obj))
+            out.write('\n')
+            prev_qa = qa
 
 
 if __name__ == '__main__':
     build_and_save_model()
+    save_qa_couples_and_vectors()

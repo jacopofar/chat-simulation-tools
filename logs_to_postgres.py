@@ -73,9 +73,6 @@ for record in tgcli_reader:
 trans.commit()
 
 
-
-
-
 adiumlogs_reader = csv.reader(open(adium_export_file), delimiter='\t')
 
 print('Importing adium logs...')
