@@ -8,6 +8,8 @@ from typing import Optional, Tuple
 import uuid
 
 from gensim.models import FastText
+from gensim.models import LsiModel
+from gensim.corpora import Dictionary
 import numpy as np
 import psycopg2
 import psycopg2.extras
@@ -22,7 +24,8 @@ conn = psycopg2.connect(
     host=config['database']['host'],
     password=config['database']['password'])
 
-model_file = "chat_simulator/fasttext.model"
+embeddings_model_file = "chat_simulator/fasttext.model"
+lsi_model_file = "chat_simulator/lsi.model"
 
 # NOTE: currently not used
 stopwords = [
@@ -139,9 +142,14 @@ def text_to_tokens(text: str) -> [str]:
     return [x for x in text.split(' ') if len(x) > 0]
 
 
-def sentences_generator():
+def tokens_generator():
     for qa in qa_generator():
         yield qa[3]
+
+def sentences_generator():
+    for qa in qa_generator():
+        yield ' '.join(qa[3])
+
 
 
 def qa_generator():
@@ -177,12 +185,13 @@ def qa_generator():
 
 
 class SentencesIterator():
-    def __init__(self):
-        self.generator = sentences_generator()
+    def __init__(self, generator_function):
+        self.generator_function = generator_function
+        self.generator = self.generator_function()
 
     def __iter__(self):
         # reset the generator
-        self.generator = sentences_generator()
+        self.generator = self.generator_function()
         return self
 
     def __next__(self):
@@ -206,17 +215,34 @@ def average_vector(model, tokens: [str]):
 
 
 def get_model():
-    model = FastText.load(model_file)
+    model = FastText.load(embeddings_model_file)
     return model
 
 
-def build_and_save_model():
+def build_and_save_lsi_model():
     print('Connecting to the database...')
-    sentences = SentencesIterator()
+    sentences = SentencesIterator(tokens_generator)
+    dct = Dictionary(sentences)
+    # Corpus as dictionary ids lists, in memory
+    # Can be transformed in an iterable as done with the others if needed
+    print('Calculating the LSI model...')
+    bow_corpus =  [dct.doc2bow(s) for s in sentences]
+    model = LsiModel(bow_corpus, id2word=dct)
+    model.print_debug()
+    model.save(lsi_model_file)
+    for t in range(model.get_topics().shape[0]):
+        print(t)
+        print(model.print_topic(t))
+
+
+
+def build_and_save_embeddings_model():
+    print('Connecting to the database...')
+    sentences = SentencesIterator(tokens_generator)
     print('Calculating the embeddings...')
     model = FastText(sentences, size=100, window=10, min_count=3, workers=4)
     print('Saving the model...')
-    model.save(model_file)
+    model.save(embeddings_model_file)
     print('Model saved. Examples:')
     interesting_words = [
         'ciao',
@@ -255,5 +281,6 @@ def save_qa_couples_and_vectors():
 
 
 if __name__ == '__main__':
-    build_and_save_model()
+    build_and_save_lsi_model()
+    build_and_save_embeddings_model()
     save_qa_couples_and_vectors()

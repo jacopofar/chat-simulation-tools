@@ -7,6 +7,7 @@ run:
 	.venv/bin/python3 process_tg_cli_logs.py
 	.venv/bin/python3 logs_to_postgres.py
 	.venv/bin/python3 chat_simulator/word_embeddings.py
+	.venv/bin/python3 chat_simulator.py
 
 tabula-rasa:
 	docker kill chatlog-postgres
