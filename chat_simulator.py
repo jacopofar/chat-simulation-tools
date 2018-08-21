@@ -80,7 +80,8 @@ class MostSimilarQuestionEmbeddingsBot():
     def handwritten_similarity(self, a: str, b: str):
         """Return a value between 0 and 1 using handwritten similarity rules.
 
-        Rules are heuristics written so that they sound good.
+        Rules are heuristics written so that they sound good, specifically
+        for Italian.
         Yes, this is super approximate :)
         """
         result = 0
@@ -124,7 +125,7 @@ class MostSimilarQuestionEmbeddingsBot():
             best_distance_so_far = 9000
             for sample in known_answers:
                 obj = json.loads(sample)
-                candidate_vector = np.array(obj['q_vector'])
+                candidate_vector = np.array(obj['q_embeddings_vector'])
                 distance = (abs(self.model.wv.cosine_similarities(question_vector,
                                                                   [candidate_vector])[0]) -
                             self.handwritten_similarity(message, obj['q']))

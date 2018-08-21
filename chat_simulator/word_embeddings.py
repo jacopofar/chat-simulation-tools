@@ -272,7 +272,7 @@ def save_qa_couples_and_vectors():
                 'group_id': prev_qa[1],
                 'ts': prev_qa[2],
                 'q': prev_qa[4],
-                'q_vector': average_vector(model, prev_qa[3]).tolist(),
+                'q_embeddings_vector': average_vector(model, prev_qa[3]).tolist(),
                 'a': qa[4]
             }
             out.write(json.dumps(obj))
