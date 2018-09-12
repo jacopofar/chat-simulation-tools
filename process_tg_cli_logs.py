@@ -22,7 +22,7 @@ online_presence_file = open('online.tsv', 'w', encoding='utf8', newline='\n')
 tg_cli_logs_folder = os.path.expanduser(config['input']['telegram_docker_folder'])
 
 # No with statement here, if it fails just stops
-messages_file.write('user_id\tuser_print_name\tto_id\tto_print_name\ttimestamp\ttext\n')
+messages_file.write('user_id\tuser_print_name\tto_id\tto_print_name\ttimestamp\tmsg_id\treply_id\ttext\n')
 online_presence_file.write('user_id\tuser_print_name\ttimestamp\n')
 
 message_writer = csv.writer(messages_file, delimiter='\t', lineterminator='\n', quoting=csv.QUOTE_ALL)
@@ -51,6 +51,8 @@ for logfile_path in sorted([f.path for f in os.scandir(tg_cli_logs_folder) if f.
                         str(obj['to']['peer_id']),
                         obj['to']['print_name'],
                         str(datetime.datetime.utcfromtimestamp(int(obj['date'])).isoformat()),
+                        obj['id'],
+                        obj.get('reply_id'),
                         obj['text'].replace('\n', ' ')])
                 except Exception as e:
                     print(obj)

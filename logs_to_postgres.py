@@ -39,7 +39,8 @@ print('Importing tg-cli logs...')
 conn.execute('DROP TABLE IF EXISTS chat_logs.tgcli');
 conn.execute('''
 CREATE UNLOGGED TABLE IF NOT EXISTS chat_logs.tgcli (
-  id UUID,
+  id TEXT,
+  reply_id TEXT,
   user_id BIGINT,
   user_print_name TEXT,
   to_id BIGINT,
@@ -49,7 +50,7 @@ CREATE UNLOGGED TABLE IF NOT EXISTS chat_logs.tgcli (
 )
 ''')
 
-sql = sa.sql.text('INSERT INTO chat_logs.tgcli VALUES (:uuid, :user_id, :user_print_name, :to_id, :to_print_name, :timestamp, :text)')
+sql = sa.sql.text('INSERT INTO chat_logs.tgcli VALUES (:msg_id, :reply_id,  :user_id, :user_print_name, :to_id, :to_print_name, :timestamp, :text)')
 # skip the header
 next(tgcli_reader, None)
 
@@ -64,7 +65,7 @@ pending = 0
 
 trans = conn.begin()
 for record in tgcli_reader:
-    conn.execute(sql, {"uuid": uuid.uuid4(), "user_id":record[0], "user_print_name":record[1], "to_id":record[2], "to_print_name":record[3], "timestamp":record[4], "text":record[5]})
+    conn.execute(sql, {"msg_id": record[5], "reply_id":record[6], "user_id":record[0], "user_print_name":record[1], "to_id":record[2], "to_print_name":record[3], "timestamp":record[4], "text":record[7]})
     pending += 1
     if pending >= batch_size:
         trans.commit()
