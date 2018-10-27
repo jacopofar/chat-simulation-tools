@@ -5,9 +5,9 @@ import uuid
 
 import sqlalchemy as sa
 
-import toml
+import tomlkit
 
-config=toml.load('config.toml')
+config=tomlkit.loads(open('config.toml', 'r').read())
 
 # this loads my three formats. Runs una tantum
 
@@ -54,6 +54,8 @@ sql = sa.sql.text('INSERT INTO chat_logs.tgcli VALUES (:msg_id, :reply_id,  :use
 # skip the header
 next(tgcli_reader, None)
 
+# this is slow and could be like 20x faster using extras.execute_values
+# but still the speed is acceptable for one-time usage and I'm too lazy to port
 # some attempts
 # batch_size = 1     time = 630
 # batch_size = 100   time = 371

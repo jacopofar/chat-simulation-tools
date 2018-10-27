@@ -10,6 +10,6 @@ run:
 	.venv/bin/python3 chat_simulator.py
 
 tabula-rasa:
-	docker kill chatlog-postgres
-	docker rm chatlog-postgres
-	docker volume rm tgpgdata
+	docker kill chatlog-postgres || echo 'probably no container was there'
+	docker rm chatlog-postgres || echo 'probably no container was there'
+	docker volume rm tgpgdata || echo 'probably no volume was there'
