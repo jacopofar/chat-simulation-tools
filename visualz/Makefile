@@ -5,5 +5,8 @@ install-backend:
 build-frontend:
 	cd frontend && yarn build
 
+develop-frontend:
+	cd frontend && yarn start
+
 run:
 	.venv/bin/python3 visualz
