@@ -14,9 +14,9 @@ import numpy as np
 import psycopg2
 import psycopg2.extras
 
-import toml
+import tomlkit
 
-config = toml.load('config.toml')
+config = tomlkit.loads(open('config.toml', 'r').read())
 conn = psycopg2.connect(
     dbname=config['database']['dbname'],
     port=config['database']['port'],
