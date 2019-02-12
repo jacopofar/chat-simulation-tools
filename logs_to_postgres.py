@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 import csv
-from pathlib import Path
 import uuid
 
+from psycopg2.extras import execute_values
 import sqlalchemy as sa
-
 import tomlkit
 
-config=tomlkit.loads(open('config.toml', 'r').read())
+config = tomlkit.loads(open('config.toml', 'r').read())
 
 # this loads my three formats. Runs una tantum
 
@@ -24,21 +23,23 @@ intermediate_tgcli = config['input']['intermediate_log']
 tgcli_export_file = 'messages.tsv'
 
 
-
 tgcli_reader = csv.reader(open(tgcli_export_file), delimiter='\t')
 
 
 # use_batch_mode allows for faster bulk inserts in postgres dialect using psycopg2. It's very neat but not much documented
-engine = sa.create_engine(config['output']['postgres_connection_string'], use_batch_mode=True)
+engine = sa.create_engine(
+  config['output']['postgres_connection_string'],
+  use_batch_mode=True)
+
 conn = engine.connect()
 
 
 print('Creating schema if needed')
-conn.execute('CREATE SCHEMA IF NOT EXISTS chat_logs');
+conn.execute('CREATE SCHEMA IF NOT EXISTS chat_logs')
 print('Importing tg-cli logs...')
-conn.execute('DROP TABLE IF EXISTS chat_logs.tgcli');
+conn.execute('DROP TABLE IF EXISTS chat_logs.tgcli')
 conn.execute('''
-CREATE UNLOGGED TABLE IF NOT EXISTS chat_logs.tgcli (
+CREATE TABLE IF NOT EXISTS chat_logs.tgcli (
   id TEXT,
   reply_id TEXT,
   user_id BIGINT,
@@ -49,39 +50,52 @@ CREATE UNLOGGED TABLE IF NOT EXISTS chat_logs.tgcli (
   text TEXT
 )
 ''')
+conn.close()
 
-sql = sa.sql.text('INSERT INTO chat_logs.tgcli VALUES (:msg_id, :reply_id,  :user_id, :user_print_name, :to_id, :to_print_name, :timestamp, :text)')
 # skip the header
 next(tgcli_reader, None)
 
-# this is slow and could be like 20x faster using extras.execute_values
-# but still the speed is acceptable for one-time usage and I'm too lazy to port
-# some attempts
-# batch_size = 1     time = 630
-# batch_size = 100   time = 371
-# batch_size = 500   time = 357
-# batch_size = 1000  time = 368
-# batch_size = 5000  time = 368
-batch_size = 500
-pending = 0
+raw_conn = engine.raw_connection().connection
 
-trans = conn.begin()
+stm = 'INSERT INTO chat_logs.tgcli VALUES %s'
+
+template = '''(
+  %(msg_id)s,
+  %(reply_id)s,
+  %(user_id)s,
+  %(user_print_name)s,
+  %(to_id)s,
+  %(to_print_name)s,
+  %(timestamp)s,
+  %(text)s
+  )'''
+
+pending_rows = []
 for record in tgcli_reader:
-    conn.execute(sql, {"msg_id": record[5], "reply_id":record[6], "user_id":record[0], "user_print_name":record[1], "to_id":record[2], "to_print_name":record[3], "timestamp":record[4], "text":record[7]})
-    pending += 1
-    if pending >= batch_size:
-        trans.commit()
-        trans = conn.begin()
-        pending = 0
-trans.commit()
+    pending_rows.append({
+      "msg_id": record[5],
+      "reply_id": record[6],
+      "user_id": record[0],
+      "user_print_name": record[1],
+      "to_id": record[2],
+      "to_print_name": record[3],
+      "timestamp": record[4],
+      "text": record[7]})
+    if len(pending_rows) > 3000:
+        with raw_conn.cursor() as cur:
+            execute_values(cur, stm, pending_rows, template=template)
+        pending_rows = []
 
+with raw_conn.cursor() as cur:
+    execute_values(cur, stm, pending_rows, template=template)
 
 adiumlogs_reader = csv.reader(open(adium_export_file), delimiter='\t')
 
 print('Importing adium logs...')
-conn.execute('DROP TABLE IF EXISTS chat_logs.adium_logs');
+conn = engine.connect()
+conn.execute('DROP TABLE IF EXISTS chat_logs.adium_logs')
 conn.execute('''
-CREATE UNLOGGED TABLE IF NOT EXISTS chat_logs.adium_logs (
+CREATE TABLE IF NOT EXISTS chat_logs.adium_logs (
   id UUID,
   room_name TEXT,
   timestamp TIMESTAMP,
@@ -90,34 +104,48 @@ CREATE UNLOGGED TABLE IF NOT EXISTS chat_logs.adium_logs (
 )
 ''')
 
-sql = sa.sql.text('INSERT INTO chat_logs.adium_logs VALUES (:uuid, :room_name, :timestamp, :user_nick, :text)')
+conn.close()
+
+stm = 'INSERT INTO chat_logs.adium_logs VALUES %s'
+
+template = '''(
+  %(uuid)s,
+  %(room_name)s,
+  %(timestamp)s,
+  %(user_nick)s,
+  %(text)s
+  )'''
+
 
 batch_size = 500
 pending = 0
 
-trans = conn.begin()
+pending_rows = []
+
 for record in adiumlogs_reader:
-    conn.execute(sql, {"uuid": uuid.uuid4(), "room_name":record[0], "timestamp":record[1], "user_nick":record[2], "text":record[3]})
-    pending += 1
-    if pending >= batch_size:
-        trans.commit()
-        trans = conn.begin()
-        pending = 0
-trans.commit()
+    pending_rows.append({
+      "uuid": uuid.uuid4(),
+      "room_name": record[0],
+      "timestamp": record[1],
+      "user_nick": record[2],
+      "text": record[3]})
+    if len(pending_rows) > 3000:
+        with raw_conn.cursor() as cur:
+            execute_values(cur, stm, pending_rows, template=template)
+        pending_rows = []
 
+with raw_conn.cursor() as cur:
+    execute_values(cur, stm, pending_rows, template=template)
 
-
-
-
-
-
-
-intermediate_tgcli_reader = csv.reader(open(intermediate_tgcli), delimiter='\t')
+intermediate_tgcli_reader = csv.reader(open(intermediate_tgcli),
+                                       delimiter='\t')
 
 print('Importing intermediate logs...')
-conn.execute('DROP TABLE IF EXISTS chat_logs.intermediate_logs');
+
+conn = engine.connect()
+conn.execute('DROP TABLE IF EXISTS chat_logs.intermediate_logs')
 conn.execute('''
-CREATE UNLOGGED TABLE IF NOT EXISTS chat_logs.intermediate_logs (
+CREATE TABLE IF NOT EXISTS chat_logs.intermediate_logs (
   id UUID,
   room_hash TEXT,
   room_name TEXT,
@@ -127,22 +155,44 @@ CREATE UNLOGGED TABLE IF NOT EXISTS chat_logs.intermediate_logs (
   text TEXT
 )
 ''')
-sql = sa.sql.text('INSERT INTO chat_logs.intermediate_logs VALUES (:uuid, :room_hash, :room_name, :timestamp, :user_id, :user_nick, :text)')
 
-batch_size = 500
-pending = 0
+conn.close()
+stm = 'INSERT INTO chat_logs.intermediate_logs VALUES %s'
 
-trans = conn.begin()
+template = '''(
+  %(uuid)s,
+  %(room_hash)s,
+  %(room_name)s,
+  %(timestamp)s,
+  %(user_id)s,
+  %(user_nick)s,
+  %(text)s
+  )'''
+
+
+pending_rows = []
+
 for record in intermediate_tgcli_reader:
-    conn.execute(sql, {"uuid": uuid.uuid4(), "room_hash":record[0].split('_')[0], "room_name":' '.join(record[0].split('_')[1:]), "timestamp":record[1], "user_id":record[2].split('_')[0],"user_nick":record[2].split('_')[1], "text":record[3]})
-    pending += 1
-    if pending >= batch_size:
-        trans.commit()
-        trans = conn.begin()
-        pending = 0
-trans.commit()
+    pending_rows.append({
+      "uuid": uuid.uuid4(),
+      "room_hash": record[0].split('_')[0],
+      "room_name": ' '.join(record[0].split('_')[1:]),
+      "timestamp": record[1],
+      "user_id": record[2].split('_')[0],
+      "user_nick": record[2].split('_')[1],
+      "text": record[3]})
 
+    if len(pending_rows) > 3000:
+        with raw_conn.cursor() as cur:
+            execute_values(cur, stm, pending_rows, template=template)
+        pending_rows = []
 
+with raw_conn.cursor() as cur:
+    execute_values(cur, stm, pending_rows, template=template)
+
+conn.close()
+
+conn = engine.connect()
 
 print('Generating support tables...')
 conn.execute('''
@@ -153,11 +203,19 @@ CREATE TABLE IF NOT EXISTS chat_logs.relevant_groups(
 ''')
 
 interesting_groups = config['relevant_groups']
-sql = sa.sql.text('INSERT INTO chat_logs.relevant_groups VALUES (:group_id, :description)')
+sql = sa.sql.text('''
+  INSERT INTO chat_logs.relevant_groups
+  VALUES (:group_id, :description)
+  ''')
 
 for group in interesting_groups:
     print(f"inserting group {group['description']}: {group['id']}")
-    conn.execute(sql, {"group_id": group['id'], "description":group['description']})
+    conn.execute(sql,
+                 {"group_id": group['id'],
+                  "description": group['description']})
+
+with raw_conn.cursor() as cur:
+    execute_values(cur, stm, pending_rows, template=template)
 
 conn.close()
 
