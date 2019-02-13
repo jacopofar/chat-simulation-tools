@@ -7,7 +7,12 @@ function HourDisplay() {
   useEffect(() => {
     fetch('/time')
     .then((response) => {
-      response.json().then(setServerTime)
+      response.json()
+      .then(setServerTime)
+      .catch(err => {
+        console.log('error in request: ', err)
+        setServerTime('error retrieving time :(')
+      })
     })
     .catch(() => {
       setServerTime(222);
@@ -16,7 +21,7 @@ function HourDisplay() {
 
   return (
     <div className="HourDisplay">
-    Hello I am an Hour Display!
+    Hello, this is Hour Display!
     <p>browser time: <time dateTime={new Date().toISOString()}>{new Date().toISOString()}</time></p>
     <p>server time: <time dateTime={serverTime}>{serverTime}</time></p>
     </div>

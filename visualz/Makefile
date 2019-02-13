@@ -1,12 +1,15 @@
-install-backend:
+.PHONY: run-dev-backend develop-frontend build-frontend install-dev-backend
+
+install-dev-backend: visualz/requirements.txt
 	python3 -m venv .venv
-	.venv/bin/python3 -m pip install .
+	.venv/bin/python3 -m pip install -r visualz/requirements.txt
 
 build-frontend:
 	cd frontend && yarn build
 
-develop-frontend:
+run-dev-frontend:
 	cd frontend && yarn start
 
-run:
-	.venv/bin/python3 visualz
+run-dev-backend: install-dev-backend
+	.venv/bin/adev runserver visualz
+

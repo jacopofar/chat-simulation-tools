@@ -1,0 +1,2 @@
+aiohttp==3.5.4
+aiohttp-devtools==0.11
