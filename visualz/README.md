@@ -7,4 +7,4 @@ Both the frontend and the backend support auto-reloading whenever something
 
 Run `make run-dev-frontend` to start the frontend in dev mode.
 
-Run `make run-dev-backebd` to create the virtualenv and serve the backend.
+Run `make run-dev-backend` to create the virtualenv and serve the backend.
