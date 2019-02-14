@@ -19,16 +19,12 @@ function TimeChart({ values }) {
       let targetBin = binTimestamp(timestamp, level);
       bins[targetBin] = (bins[targetBin] || []).concat([values[timestamp]]);
     }
-    return bins;
+    return Object.entries(bins).sort((a, b) => a[0] > b[0] ? 1 : -1);
   };
 
   const sumBy = (values, level = 'day') => {
-    const aggregated = groupBy(values, level);
-    const retVal = {};
-    for (let ts in aggregated) {
-      retVal[ts] = aggregated[ts].reduce((a,b) => a+b, 0);
-    }
-    return Object.entries(retVal);
+    return groupBy(values, level).map(
+      ([k, vals]) => [k, vals.reduce((a, b) => a+b, 0)]);
   };
 
 
