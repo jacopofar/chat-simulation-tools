@@ -715,7 +715,7 @@
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-transform-typescript" "^7.1.0"
 
-"@babel/runtime@7.3.1":
+"@babel/runtime@7.3.1", "@babel/runtime@^7.1.2":
   version "7.3.1"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.3.1.tgz#574b03e8e8a9898eaf4a872a92ea20b7846f6f2a"
   integrity sha512-7jGW8ppV0ant637pIqAcFfQDDH1orEPGJb8aXfUozuCU3QqX7rX4DA8iwrbPrR1hcH0FTTHz47yQnk+bl5xHQA==
@@ -772,6 +772,14 @@
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
+
+"@semantic-ui-react/event-stack@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@semantic-ui-react/event-stack/-/event-stack-3.0.1.tgz#41d0b095ac94cc5e1607a4fed4d0f8860d0d2e60"
+  integrity sha512-9YNRr0z9GEvk/yvIzAzv0sbYa/FPrtWTYibu+chJ0CEMQjYDjUdRSqtxXOvP0eM6kZjD1G/Oy1LhPiHG7DRHsg==
+  dependencies:
+    exenv "^1.2.2"
+    prop-types "^15.6.2"
 
 "@svgr/babel-plugin-add-jsx-attribute@^4.0.0":
   version "4.0.0"
@@ -2155,6 +2163,11 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
+classnames@2.x, classnames@^2.2.5, classnames@^2.2.6:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
+  integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
+
 clean-css@4.2.x:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.2.1.tgz#2d411ef76b8569b6d0c84068dabe85b0aa5e5c17"
@@ -3513,6 +3526,11 @@ execa@^1.0.0:
     p-finally "^1.0.0"
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
+
+exenv@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/exenv/-/exenv-1.2.2.tgz#2ae78e85d9894158670b03d47bec1f03bd91bb9d"
+  integrity sha1-KueOhdmJQVhnCwPUe+wfA72Ru50=
 
 exit@^0.1.2:
   version "0.1.2"
@@ -5470,6 +5488,11 @@ joi@^11.1.1:
     isemail "3.x.x"
     topo "2.x.x"
 
+jquery@x.*:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
+  integrity sha512-Ubldcmxp5np52/ENotGxlLe6aGMvmF4R8S6tZjsP6Knsaxd/xp3Zrh50cG93lR6nPXyUFwzN3ZSOQI0wRJNdGg==
+
 js-levenshtein@^1.1.3:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/js-levenshtein/-/js-levenshtein-1.1.6.tgz#c6cee58eb3550372df8deb85fad5ce66ce01d59d"
@@ -5629,6 +5652,11 @@ jsx-ast-utils@^2.0.1:
   integrity sha1-6AGxs5mF4g//yHtA43SAgOLcrH8=
   dependencies:
     array-includes "^3.0.3"
+
+keyboard-key@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/keyboard-key/-/keyboard-key-1.0.4.tgz#52d8fa07b7e17757072aa22a67fb4ae85e4c46b0"
+  integrity sha512-my04dE6BCwPpwoe4KYKfPxWiwgDYQOHrVmtzn1CfzmoEsGG/ef4oZGaXCzi1+iFhG7CN5JkOuxmei5OABY8/ag==
 
 killable@^1.0.0:
   version "1.0.1"
@@ -5790,6 +5818,11 @@ lodash.camelcase@^4.3.0:
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
   integrity sha1-soqmKIorn8ZRA1x3EfZathkDMaY=
 
+lodash.isequal@^4.0.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
+  integrity sha1-QVxEePK8wwEgwizhDtMib30+GOA=
+
 lodash.memoize@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
@@ -5835,7 +5868,7 @@ loglevel@^1.4.1:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.1.tgz#e0fc95133b6ef276cdc8887cdaf24aa6f156f8fa"
   integrity sha1-4PyVEztu8nbNyIh82vJKpvFW+Po=
 
-loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.3.1:
+loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.3.1, loose-envify@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
   integrity sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==
@@ -7627,6 +7660,15 @@ prompts@^0.1.9:
     kleur "^2.0.1"
     sisteransi "^0.1.1"
 
+prop-types@15.x, prop-types@^15.6.0:
+  version "15.7.2"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
+  integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
+  dependencies:
+    loose-envify "^1.4.0"
+    object-assign "^4.1.1"
+    react-is "^16.8.1"
+
 prop-types@^15.6.2:
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.2.tgz#05d5ca77b4453e985d60fc7ff8c859094a497102"
@@ -7839,20 +7881,52 @@ react-dev-utils@^7.0.2:
     strip-ansi "5.0.0"
     text-table "0.2.0"
 
-react-dom@16.8.1:
-  version "16.8.1"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.8.1.tgz#ec860f98853d09d39bafd3a6f1e12389d283dbb4"
-  integrity sha512-N74IZUrPt6UiDjXaO7UbDDFXeUXnVhZzeRLy/6iqqN1ipfjrhR60Bp5NuBK+rv3GMdqdIuwIl22u1SYwf330bg==
+react-dom@^16.8.1:
+  version "16.8.2"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.8.2.tgz#7c8a69545dd554d45d66442230ba04a6a0a3c3d3"
+  integrity sha512-cPGfgFfwi+VCZjk73buu14pYkYBR1b/SRMSYqkLDdhSEHnSwcuYTPu6/Bh6ZphJFIk80XLvbSe2azfcRzNF+Xg==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
-    scheduler "^0.13.1"
+    scheduler "^0.13.2"
+
+react-draggable@3.x, "react-draggable@^2.2.6 || ^3.0.3":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-3.1.1.tgz#ed1db43e09b146805f6d158296e58eae4f768d36"
+  integrity sha512-tqIgDUm4XPSFbxelYpcsnayPU79P26ChnszDl5/RDFKfMuHnRxypS+OFfEyAEO1CtqaB3lrecQ2dyNIE2G0TlQ==
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.6.0"
 
 react-error-overlay@^5.1.3:
   version "5.1.3"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-5.1.3.tgz#16fcbde75ed4dc6161dc6dc959b48e92c6ffa9ad"
   integrity sha512-GoqeM3Xadie7XUApXOjkY3Qhs8RkwB/Za4WMedBGrOKH1eTuKGyoAECff7jiVonJchOx6KZ9i8ILO5XIoHB+Tg==
+
+react-grid-layout@^0.16.6:
+  version "0.16.6"
+  resolved "https://registry.yarnpkg.com/react-grid-layout/-/react-grid-layout-0.16.6.tgz#9b2407a2b946c2260ebaf66f13b556e1da4efeb2"
+  integrity sha512-h2EsYgsqcESLJeevQSJsEKp8hhh+phOlXDJoMhlV2e7T3VWQL+S6iCF3iD/LK19r4oyRyOMDEir0KV+eLXrAyw==
+  dependencies:
+    classnames "2.x"
+    lodash.isequal "^4.0.0"
+    prop-types "15.x"
+    react-draggable "3.x"
+    react-resizable "1.x"
+
+react-is@^16.7.0, react-is@^16.8.1:
+  version "16.8.2"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.2.tgz#09891d324cad1cb0c1f2d91f70a71a4bee34df0f"
+  integrity sha512-D+NxhSR2HUCjYky1q1DwpNUD44cDpUXzSmmFyC3ug1bClcU/iDNy0YNn1iwme28fn+NFhpA13IndOd42CrFb+Q==
+
+react-resizable@1.x:
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/react-resizable/-/react-resizable-1.7.5.tgz#83eb75bb3684da6989bbbf4f826e1470f0af902e"
+  integrity sha512-lauPcBsLqmxMHXHpTeOBpYenGalbSikYr8hK+lwtNYMQX1pGd2iYE+pDvZEV97nCnzuCtWM9htp7OpsBIY2Sjw==
+  dependencies:
+    prop-types "15.x"
+    react-draggable "^2.2.6 || ^3.0.3"
 
 react-scripts@2.1.4:
   version "2.1.4"
@@ -7909,15 +7983,15 @@ react-scripts@2.1.4:
   optionalDependencies:
     fsevents "1.2.4"
 
-react@16.8.1:
-  version "16.8.1"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.8.1.tgz#ae11831f6cb2a05d58603a976afc8a558e852c4a"
-  integrity sha512-wLw5CFGPdo7p/AgteFz7GblI2JPOos0+biSoxf1FPsGxWQZdN/pj6oToJs1crn61DL3Ln7mN86uZ4j74p31ELQ==
+react@^16.8.1:
+  version "16.8.2"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.8.2.tgz#83064596feaa98d9c2857c4deae1848b542c9c0c"
+  integrity sha512-aB2ctx9uQ9vo09HVknqv3DGRpI7OIGJhCx3Bt0QqoRluEjHSaObJl+nG12GDdYH6sTgE7YiPJ6ZUyMx9kICdXw==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
-    scheduler "^0.13.1"
+    scheduler "^0.13.2"
 
 read-pkg-up@^1.0.1:
   version "1.0.1"
@@ -8373,10 +8447,10 @@ sax@^1.2.4, sax@~1.2.4:
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
 
-scheduler@^0.13.1:
-  version "0.13.1"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.13.1.tgz#1a217df1bfaabaf4f1b92a9127d5d732d85a9591"
-  integrity sha512-VJKOkiKIN2/6NOoexuypwSrybx13MY7NSy9RNt8wPvZDMRT1CW6qlpF5jXRToXNHz3uWzbm2elNpZfXfGPqP9A==
+scheduler@^0.13.2:
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.13.2.tgz#969eaee2764a51d2e97b20a60963b2546beff8fa"
+  integrity sha512-qK5P8tHS7vdEMCW5IPyt8v9MJOHqTrOUgPXib7tqm9vh834ibBX5BNhwkplX/0iOzHW5sXyluehYfS9yrkz9+w==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -8409,6 +8483,27 @@ selfsigned@^1.9.1:
   integrity sha512-9AukTiDmHXGXWtWjembZ5NDmVvP2695EtpgbCsxCa68w3c88B+alqbmZ4O3hZ4VWGXeGWzEVdvqgAJD8DQPCDw==
   dependencies:
     node-forge "0.7.5"
+
+semantic-ui-css@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/semantic-ui-css/-/semantic-ui-css-2.4.1.tgz#f5aea39fafb787cbd905ec724272a3f9cba9004a"
+  integrity sha512-Pkp0p9oWOxlH0kODx7qFpIRYpK1T4WJOO4lNnpNPOoWKCrYsfHqYSKgk5fHfQtnWnsAKy7nLJMW02bgDWWFZFg==
+  dependencies:
+    jquery x.*
+
+semantic-ui-react@^0.85.0:
+  version "0.85.0"
+  resolved "https://registry.yarnpkg.com/semantic-ui-react/-/semantic-ui-react-0.85.0.tgz#64ff420e6432e61bc798baf27d368f73cf0cad28"
+  integrity sha512-rroRoux+MMmLaZCZfFX9xZfTo1cy+JiM55fVaaqbfPq0s0RupraBhamJhvTDz7idl3ionaXPW7knJyZAz4XMGg==
+  dependencies:
+    "@babel/runtime" "^7.1.2"
+    "@semantic-ui-react/event-stack" "^3.0.1"
+    classnames "^2.2.6"
+    keyboard-key "^1.0.4"
+    lodash "^4.17.11"
+    prop-types "^15.6.2"
+    react-is "^16.7.0"
+    shallowequal "^1.1.0"
 
 "semver@2 || 3 || 4 || 5", semver@^5.3.0, semver@^5.4.1, semver@^5.5.0, semver@^5.5.1, semver@^5.6.0:
   version "5.6.0"
@@ -8523,6 +8618,11 @@ shallow-clone@^1.0.0:
     is-extendable "^0.1.1"
     kind-of "^5.0.0"
     mixin-object "^2.0.1"
+
+shallowequal@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
+  integrity sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==
 
 shebang-command@^1.2.0:
   version "1.2.0"

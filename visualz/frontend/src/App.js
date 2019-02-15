@@ -1,26 +1,38 @@
 import React, { Component } from 'react';
 import './App.css';
-import HourDisplay from './HourDisplay';
-import TimeChart from './TimeChart';
+import 'semantic-ui-css/semantic.min.css';
+import GridLayout from 'react-grid-layout';
+import { Form } from 'semantic-ui-react'
 
 class App extends Component {
-  render() {
-    const k = {
-      '2019-02-13T16:07:04.370Z': 23,
-      '2019-02-12T15:07:04.370Z': 15,
-      '2019-02-11T15:07:04.370Z': 10,
-      '2019-02-11T16:07:04.370Z': 10,
-    };
+  state = { searchKeyword: '' };
 
+  handleChange = (e, { name, value }) => this.setState({ [name]: value });
+
+  handleSubmit = () => {
+    console.log('submitted:', this.state.searchKeyword);
+  };
+
+  render() {
+    let layout = [
+      {i: 'a', x: 1, y: 0, w: 11, h: 2, static: true},
+      {i: 'b', x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4},
+      {i: 'c', x: 4, y: 0, w: 1, h: 2}
+    ];
     return (
       <div className="App">
-        <header className="App-header">
-          <HourDisplay/>
-          <TimeChart values={k} level='day'/>
-        </header>
+        <GridLayout className="layout" layout={layout} cols={12} rowHeight={30} width={1200}>
+          <div className="search__text" key="a">
+            <Form onSubmit={this.handleSubmit}>
+              <Form.Input size='small' icon='search' placeholder='Search...' name='searchKeyword' onChange={this.handleChange} />
+            </Form>
+          </div>
+          <div key="b">placeholder 1</div>
+          <div key="c">placeholder 2</div>
+        </GridLayout>
       </div>
-    );
+      );
+    }
   }
-}
 
-export default App;
+  export default App;

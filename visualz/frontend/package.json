@@ -5,7 +5,10 @@
   "dependencies": {
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
-    "react-scripts": "2.1.4"
+    "react-grid-layout": "^0.16.6",
+    "react-scripts": "2.1.4",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.85.0"
   },
   "scripts": {
     "start": "react-scripts start",
