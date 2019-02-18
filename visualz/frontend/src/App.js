@@ -2,14 +2,23 @@ import React, { Component } from 'react';
 import './App.css';
 import 'semantic-ui-css/semantic.min.css';
 import GridLayout from 'react-grid-layout';
-import { Form } from 'semantic-ui-react'
+import { Form } from 'semantic-ui-react';
+import axios from 'axios';
 
 class App extends Component {
-  state = { searchKeyword: '' };
+  state = { searchKeyword: '', searchResults: [] };
 
   handleChange = (e, { name, value }) => this.setState({ [name]: value });
 
   handleSubmit = () => {
+    axios.get('/messages', {
+      params: {
+        query: this.state.searchKeyword
+      }
+    })
+    .then( (response) => {
+      this.setState({ searchResults: response.data})
+    })
     console.log('submitted:', this.state.searchKeyword);
   };
 
@@ -27,7 +36,7 @@ class App extends Component {
               <Form.Input size='small' icon='search' placeholder='Search...' name='searchKeyword' onChange={this.handleChange} />
             </Form>
           </div>
-          <div key="b">placeholder 1</div>
+          <div key="b">{this.state.searchResults.map(r => <p>{r.text}</p>)}</div>
           <div key="c">placeholder 2</div>
         </GridLayout>
       </div>
