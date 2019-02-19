@@ -14,7 +14,10 @@ async def search_message(request):
     conn = await asyncpg.connect(user='postgres', password='mysecretpassword',
                                  database='clogs', host='127.0.0.1', port=5442)
     rows = await conn.fetch('''
-        select * from chat_logs.intermediate_logs where text ~$1
+        select *
+        from chat_logs.intermediate_logs
+        where text ~*$1
+        order by timestamp
         ''', query)
     await conn.close()
     retval = []

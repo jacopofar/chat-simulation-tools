@@ -1,0 +1,13 @@
+.chat__message-box{
+  border: solid 2px gray;
+  padding: 5px;
+  text-align: left;
+}
+
+.chat__message-box time{
+}
+
+.chat__message-user{
+  padding: 5px;
+  font-weight: bold;
+}

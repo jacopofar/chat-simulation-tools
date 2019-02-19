@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import './App.css';
+import './ChatMessage';
 import 'semantic-ui-css/semantic.min.css';
 import GridLayout from 'react-grid-layout';
 import { Form } from 'semantic-ui-react';
 import axios from 'axios';
+import ChatMessage from './ChatMessage';
 
 class App extends Component {
   state = { searchKeyword: '', searchResults: [] };
@@ -25,7 +27,7 @@ class App extends Component {
   render() {
     let layout = [
       {i: 'a', x: 1, y: 0, w: 11, h: 2, static: true},
-      {i: 'b', x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4},
+      {i: 'b', x: 1, y: 3, w: 3, h: 2, minW: 2, maxW: 10,  static: true},
       {i: 'c', x: 4, y: 0, w: 1, h: 2}
     ];
     return (
@@ -36,7 +38,9 @@ class App extends Component {
               <Form.Input size='small' icon='search' placeholder='Search...' name='searchKeyword' onChange={this.handleChange} />
             </Form>
           </div>
-          <div key="b">{this.state.searchResults.map(r => <p>{r.text}</p>)}</div>
+          <div key="b">{this.state.searchResults.map(r =>
+           <ChatMessage message={r}/>
+          )}</div>
           <div key="c">placeholder 2</div>
         </GridLayout>
       </div>
