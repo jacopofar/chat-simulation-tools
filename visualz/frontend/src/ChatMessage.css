@@ -1,0 +1,20 @@
+.chat__message-box{
+  border: solid 2px gray;
+  padding: 1em;
+  text-align: left;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat__message-box time{
+}
+
+.chat__message-user{
+  font-weight: bold;
+}
+
+.chat__message-analysis{
+  width: 95%;
+}
