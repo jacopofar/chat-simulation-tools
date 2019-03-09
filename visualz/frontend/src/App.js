@@ -27,8 +27,8 @@ class App extends Component {
   render() {
     let layout = [
       {i: 'a', x: 1, y: 0, w: 11, h: 2, static: true},
-      {i: 'b', x: 1, y: 3, w: 3, h: 2, minW: 2, maxW: 10,  static: true},
-      {i: 'c', x: 4, y: 0, w: 1, h: 2}
+      {i: 'b', x: 1, y: 3, w: 10, h: 2, minW: 2, maxW: 10,  static: true},
+      {i: 'c', x: 12, y: 0, w: 1, h: 2}
     ];
     return (
       <div className="App">
@@ -38,8 +38,10 @@ class App extends Component {
               <Form.Input size='small' icon='search' placeholder='Search...' name='searchKeyword' onChange={this.handleChange} />
             </Form>
           </div>
-          <div key="b">{this.state.searchResults.map(r =>
-           <ChatMessage message={r}/>
+          <div key="b">
+          <p className="search__result__description"><strong>{this.state.searchResults.length} results</strong> for "{this.state.searchKeyword}" </p>
+          {this.state.searchResults.map(r =>
+           <ChatMessage key= {r.uuid} message={r}/>
           )}</div>
           <div key="c">placeholder 2</div>
         </GridLayout>
