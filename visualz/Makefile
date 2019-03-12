@@ -1,4 +1,9 @@
-.PHONY: run-dev-backend develop-frontend build-frontend install-dev-backend
+.PHONY: run-dev-backend \
+		develop-frontend \
+		build-frontend \
+		install-dev-backend \
+		test-frontend \
+		parallel-tmux-dev
 
 install-dev-backend: visualz/requirements.txt
 	python3 -m venv .venv
@@ -15,3 +20,11 @@ run-dev-frontend:
 run-dev-backend: install-dev-backend
 	.venv/bin/adev runserver visualz
 
+test-frontend:
+	cd frontend && npm run test
+
+parallel-tmux-dev:
+	tmux new-session -d 'make run-dev-backend'
+	tmux split-window -h 'make run-dev-frontend'
+	tmux split-window -v 'make test-frontend'
+	tmux -2 attach-session -d
