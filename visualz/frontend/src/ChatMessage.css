@@ -1,17 +1,36 @@
 .chat__message-box{
-  border: solid 2px gray;
+  border: solid 1px gray;
   padding: 1em;
-  text-align: left;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: [user] 15% [timestamp] 15% 45% [commands] 25%;
+  grid-template-rows: [header] 5% [content] 95%;
 }
 
 .chat__message-user{
   font-weight: bold;
+  grid-column-start: user;
+  grid-column-end: timestamp;
+  grid-row-start: header;
+  grid-row-end: content;
 }
 
-.chat__message-analysis{
-  width: 95%;
+.chat__message-timestamp{
+  grid-column-start: timestamp;
+  grid-column-end: 3;
+  grid-row-start: header;
+  grid-row-end: content;
+}
+
+.chat__message-analysis-deptree{
+  grid-column-start: commands;
+  grid-row-start: header;
+  grid-row-end: content;
+}
+
+
+.chat__message-text{
+  grid-column-start: user;
+  grid-column-end: 3;
+  grid-column-start: commands;
+  grid-row-start: content;
 }
