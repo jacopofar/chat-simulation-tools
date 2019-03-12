@@ -8,7 +8,7 @@ import axios from 'axios';
 import ChatMessage from './ChatMessage';
 
 class App extends Component {
-  state = { searchKeyword: '', searchResults: [] };
+  state = { searchKeyword: '', searchResults: null };
 
   handleChange = (e, { name, value }) => this.setState({ [name]: value });
 
@@ -39,10 +39,14 @@ class App extends Component {
             </Form>
           </div>
           <div key="b">
+          {this.state.searchResults != null &&
           <p className="search__result__description"><strong>{this.state.searchResults.length} results</strong> for "{this.state.searchKeyword}" </p>
-          {this.state.searchResults.map(r =>
+          }
+          {this.state.searchResults != null &&
+          this.state.searchResults.map(r =>
            <ChatMessage key= {r.uuid} message={r}/>
-          )}</div>
+          )
+          }</div>
           <div key="c">placeholder 2</div>
         </GridLayout>
       </div>

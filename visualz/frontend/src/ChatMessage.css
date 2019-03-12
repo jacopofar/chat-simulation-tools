@@ -8,9 +8,6 @@
   align-items: center;
 }
 
-.chat__message-box time{
-}
-
 .chat__message-user{
   font-weight: bold;
 }
