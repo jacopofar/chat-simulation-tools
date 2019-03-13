@@ -1,3 +1,15 @@
+# common virtualenv
+venv
 .venv
+# python generated files
+*.py[co]
+__pycache__/
+
+# dotenv files
+.env
+
+# jupyter stuff
 .ipynb_checkpoints
+
+# config with secret tokens
 config.toml

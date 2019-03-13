@@ -26,7 +26,8 @@ tgcli_export_file = 'messages.tsv'
 tgcli_reader = csv.reader(open(tgcli_export_file), delimiter='\t')
 
 
-# use_batch_mode allows for faster bulk inserts in postgres dialect using psycopg2. It's very neat but not much documented
+# use_batch_mode allows for faster bulk inserts using psycopg2.
+# It's very neat but not much documented
 engine = sa.create_engine(
   config['output']['postgres_connection_string'],
   use_batch_mode=True)
@@ -47,7 +48,8 @@ CREATE TABLE IF NOT EXISTS chat_logs.tgcli (
   to_id BIGINT,
   to_print_name TEXT,
   timestamp TIMESTAMP,
-  text TEXT
+  text TEXT,
+  uuid UUID
 )
 ''')
 conn.close()
@@ -67,7 +69,8 @@ template = '''(
   %(to_id)s,
   %(to_print_name)s,
   %(timestamp)s,
-  %(text)s
+  %(text)s,
+  %(uuid)s
   )'''
 
 pending_rows = []
@@ -80,7 +83,8 @@ for record in tgcli_reader:
       "to_id": record[2],
       "to_print_name": record[3],
       "timestamp": record[4],
-      "text": record[7]})
+      "text": record[7],
+      "uuid": uuid.uuid4()})
     if len(pending_rows) > 3000:
         with raw_conn.cursor() as cur:
             execute_values(cur, stm, pending_rows, template=template)
@@ -146,7 +150,7 @@ conn = engine.connect()
 conn.execute('DROP TABLE IF EXISTS chat_logs.intermediate_logs')
 conn.execute('''
 CREATE TABLE IF NOT EXISTS chat_logs.intermediate_logs (
-  id UUID,
+  uuid UUID,
   room_hash TEXT,
   room_name TEXT,
   timestamp TIMESTAMP,

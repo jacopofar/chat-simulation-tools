@@ -1,13 +1,8 @@
 #!/usr/bin/env python3
-import os
-from pathlib import Path
 import json
 import re
-import time
-from typing import Optional, Tuple
-import uuid
 
-from gensim.models import FastText
+from gensim.models import FastText, Word2Vec
 from gensim.models import LsiModel
 from gensim.corpora import Dictionary
 import numpy as np
@@ -24,8 +19,10 @@ conn = psycopg2.connect(
     host=config['database']['host'],
     password=config['database']['password'])
 
-embeddings_model_file = "chat_simulator/fasttext.model"
-lsi_model_file = "chat_simulator/lsi.model"
+EMBEDDINGS_FASTTEXT_MODEL_FILE = "chat_simulator/fasttext.model"
+EMBEDDINGS_WORD2VEC_MODEL_FILE = "chat_simulator/word2vec.model"
+
+LSI_MODEL_FILE = "chat_simulator/lsi.model"
 
 # NOTE: currently not used
 stopwords = [
@@ -146,11 +143,6 @@ def tokens_generator():
     for qa in qa_generator():
         yield qa[3]
 
-def sentences_generator():
-    for qa in qa_generator():
-        yield ' '.join(qa[3])
-
-
 
 def qa_generator():
     """Generator which returns Q/A tuples.
@@ -165,7 +157,7 @@ def qa_generator():
             where """
                      + config['vector_filter']['where_clause'] +
                      """
-            ) ORDER BY to_id, timestamp""")
+            ) ORDER BY to_id, timestamp ASC""")
         partial_text = []
         raw_text = ''
         last_user = None
@@ -215,7 +207,7 @@ def average_vector(model, tokens: [str]):
 
 
 def get_model():
-    model = FastText.load(embeddings_model_file)
+    model = FastText.load(EMBEDDINGS_FASTTEXT_MODEL_FILE)
     return model
 
 
@@ -226,24 +218,45 @@ def build_and_save_lsi_model():
     # Corpus as dictionary ids lists, in memory
     # Can be transformed in an iterable as done with the others if needed
     print('Calculating the LSI model...')
-    bow_corpus =  [dct.doc2bow(s) for s in sentences]
+    bow_corpus = [dct.doc2bow(s) for s in sentences]
     model = LsiModel(bow_corpus, id2word=dct)
     model.print_debug()
-    model.save(lsi_model_file)
+    model.save(LSI_MODEL_FILE)
     for t in range(model.get_topics().shape[0]):
         print(t)
         print(model.print_topic(t))
 
 
-
-def build_and_save_embeddings_model():
+def build_and_save_word2vec_embeddings_model():
     print('Connecting to the database...')
     sentences = SentencesIterator(tokens_generator)
     print('Calculating the embeddings...')
     model = FastText(sentences, size=100, window=10, min_count=3, workers=4)
     print('Saving the model...')
-    model.save(embeddings_model_file)
-    print('Model saved. Examples:')
+    model.save(EMBEDDINGS_WORD2VEC_MODEL_FILE)
+    print('WORD2VEC Model saved. Examples:')
+    interesting_words = [
+        'ciao',
+        'salutare',
+        'motorino',
+        'simpatia',
+        'milano',
+        'roma',
+        'sgargapuffoparolainventata']
+    for w in interesting_words:
+        print('Words most similar to', w)
+        print([sw[0] for sw in model.most_similar(w)])
+    return model
+
+
+def build_and_save_fasttext_embeddings_model():
+    print('Connecting to the database...')
+    sentences = SentencesIterator(tokens_generator)
+    print('Calculating the embeddings...')
+    model = Word2Vec(sentences, size=100, window=10, min_count=3, workers=4)
+    print('Saving the model...')
+    model.save(EMBEDDINGS_FASTTEXT_MODEL_FILE)
+    print('FASTTEXT Model saved. Examples:')
     interesting_words = [
         'ciao',
         'salutare',
@@ -272,7 +285,8 @@ def save_qa_couples_and_vectors():
                 'group_id': prev_qa[1],
                 'ts': prev_qa[2],
                 'q': prev_qa[4],
-                'q_embeddings_vector': average_vector(model, prev_qa[3]).tolist(),
+                'q_embeddings_vector': average_vector(
+                    model, prev_qa[3]).tolist(),
                 'a': qa[4]
             }
             out.write(json.dumps(obj))
@@ -282,5 +296,6 @@ def save_qa_couples_and_vectors():
 
 if __name__ == '__main__':
     build_and_save_lsi_model()
-    build_and_save_embeddings_model()
+    build_and_save_word2vec_embeddings_model()
+    build_and_save_fasttext_embeddings_model()
     save_qa_couples_and_vectors()

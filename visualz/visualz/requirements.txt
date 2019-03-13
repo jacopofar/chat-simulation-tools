@@ -1,0 +1,4 @@
+aiohttp==3.5.4
+aiohttp-devtools==0.12
+asyncpg==0.18.3
+spacy==2.0.18
