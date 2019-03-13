@@ -43,7 +43,8 @@ for logfile_path in sorted([f.path
                             for f in os.scandir(tg_cli_logs_folder)
                             if f.is_file() and
                             f.name.startswith('complete_logs_')]):
-    print(logfile_path, message_count)
+
+    print(logfile_path, 'messages so far:', message_count)
     with open(logfile_path, 'r', encoding='utf-8') as logfile:
         for linenum, line in enumerate(logfile):
             line_without_ansi = line[line.find('{"'): -1]

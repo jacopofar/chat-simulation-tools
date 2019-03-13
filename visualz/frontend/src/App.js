@@ -8,7 +8,8 @@ import axios from 'axios';
 import ChatMessage from './ChatMessage';
 
 class App extends Component {
-  state = { searchKeyword: '', searchResults: null };
+
+  state = { searchKeyword: '', searchResults: [] };
 
   handleChange = (e, { name, value }) => this.setState({ [name]: value });
 

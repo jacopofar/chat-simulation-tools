@@ -26,7 +26,8 @@ tgcli_export_file = 'messages.tsv'
 tgcli_reader = csv.reader(open(tgcli_export_file), delimiter='\t')
 
 
-# use_batch_mode allows for faster bulk inserts in postgres dialect using psycopg2. It's very neat but not much documented
+# use_batch_mode allows for faster bulk inserts using psycopg2.
+# It's very neat but not much documented
 engine = sa.create_engine(
   config['output']['postgres_connection_string'],
   use_batch_mode=True)
