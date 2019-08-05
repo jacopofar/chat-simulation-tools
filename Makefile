@@ -4,10 +4,12 @@ run:
 	docker exec chatlog-postgres sh -c "echo 'CREATE DATABASE clogs;' |psql -U postgres"
 	python3 -m venv .venv
 	.venv/bin/pip3 install -r requirements.txt
+	.venv/bin/python3 tweets_to_postgres.py
 	.venv/bin/python3 process_tg_cli_logs.py
 	.venv/bin/python3 logs_to_postgres.py
-	.venv/bin/python3 chat_simulator/word_embeddings.py
-	.venv/bin/python3 chat_simulator.py
+
+	# .venv/bin/python3 chat_simulator/word_embeddings.py
+	# .venv/bin/python3 chat_simulator.py
 
 tabula-rasa:
 	docker kill chatlog-postgres || echo 'probably no container was there'

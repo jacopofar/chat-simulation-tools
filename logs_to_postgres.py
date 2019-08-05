@@ -85,7 +85,7 @@ for record in tgcli_reader:
       "timestamp": record[4],
       "text": record[7],
       "uuid": uuid.uuid4()})
-    if len(pending_rows) > 3000:
+    if len(pending_rows) > 50000:
         with raw_conn.cursor() as cur:
             execute_values(cur, stm, pending_rows, template=template)
         pending_rows = []

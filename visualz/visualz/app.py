@@ -17,14 +17,18 @@ async def get_time(request):
 
 async def search_message(request):
     query: str = request.query.getone('query')
+    offset: str = request.query.getone('offset')
+    limit: str = request.query.getone('limit', 100)
     pool = request.app['connection_pool']
+
     async with pool.acquire() as connection:
         rows = await connection.fetch('''
-            select *
-            from chat_logs.tgcli
-            where text ~*$1
-            order by timestamp
-            ''', query)
+            SELECT *
+            FROM chat_logs.tgcli
+            WHERE text ~*$1
+            AND timestamp > $2
+            ORDER BY timestamp
+            ''', query, offset)
     retval = []
     for row in rows:
         dbobj = {

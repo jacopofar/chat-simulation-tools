@@ -9,7 +9,7 @@ import ChatMessage from './ChatMessage';
 
 class App extends Component {
 
-  state = { searchKeyword: '', searchResults: [] };
+  state = { searchKeyword: '', searchResults: null };
 
   handleChange = (e, { name, value }) => this.setState({ [name]: value });
 
