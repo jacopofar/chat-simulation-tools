@@ -199,12 +199,17 @@ conn.close()
 conn = engine.connect()
 
 print('Generating support tables...')
+
+
+conn.execute('DROP TABLE IF EXISTS chat_logs.relevant_groups')
 conn.execute('''
-CREATE TABLE IF NOT EXISTS chat_logs.relevant_groups(
+CREATE TABLE chat_logs.relevant_groups(
   id INTEGER PRIMARY KEY,
   description TEXT
 )
 ''')
+conn.close()
+conn = engine.connect()
 
 interesting_groups = config['relevant_groups']
 sql = sa.sql.text('''

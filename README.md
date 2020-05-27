@@ -16,3 +16,13 @@ Copy `config.example.toml` to `config.toml` and fill it, then:
 you'll need Docker, Python 3.6 and patience.
 
 To run the GUI look at the README in the `visualz` folder.
+
+## Components
+
+The project is a collection of sparse scripts to un manually, really.
+
+However, these are the ideas behind the different files:
+
+* *atomize* generates a JSONL file with "atoms" of conversation, used to train a model and evaluate models and humans
+* *chat_simulator* calculates embeddings
+* *visualz* allows to search through the DB and apply Spacy on the fly to the messages
