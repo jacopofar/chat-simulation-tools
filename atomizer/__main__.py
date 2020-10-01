@@ -112,7 +112,7 @@ def main():
         user=config['database']['user'],
         host=config['database']['host'],
         password=config['database']['password'])
-    d = deque([], 10)
+    d = deque([], 20)
     f = open('conversation_atoms.jsonl', 'w')
     latest_group = None
     for msg in conversation_lines(conn):
@@ -133,7 +133,9 @@ def main():
         if len(d) > 50:
             d.popleft()
     f.close()
-
+    print(
+        'NOTE: you need to shuffle the file with sort --random-sort or similar'
+    )
 
 
 if __name__ == '__main__':
