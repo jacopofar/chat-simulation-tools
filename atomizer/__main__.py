@@ -17,6 +17,28 @@ def conversation_lines(conn):
         curs.execute("""
         SELECT DISTINCT
             id,
+            'fake' AS reply_id,
+            timestamp,
+            room_name AS group_id,
+            user_nick AS user_id,
+            text,
+            id as uuid
+        FROM
+            chat_logs.adium_logs logs
+        ORDER BY
+                room_name,
+                timestamp;
+            """)
+        yield from curs
+    print('adium chat finished, continuing with vis-a-vis chats...')
+
+    with conn.cursor(
+        name='blabla',
+        cursor_factory=psycopg2.extras.NamedTupleCursor
+            ) as curs:
+        curs.execute("""
+        SELECT DISTINCT
+            id,
             reply_id,
             timestamp,
             -- fake unique ID for the conversation pair
@@ -84,6 +106,11 @@ def process_queue(queue, file):
         seen_users.add(m.user_id)
     # it has to be meaningful
     if len(messages) < 2:
+        return
+    # if more than half of the messages are identical, it's probably spam/flooding
+    distinct_messages = set(','.join(lines) for _, lines in messages)
+    if len(distinct_messages) * 2 < len(messages):
+        print(f'Spam skipped: {messages}')
         return
     # change the names with indexed ids
     seen_users = list(seen_users)

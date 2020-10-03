@@ -1,19 +1,23 @@
 from collections import Counter
+import logging
 from typing import List, Tuple
 from random import random
 
 from atomizer.conversation_model import ConversationModel
 
+logger = logging.getLogger(__name__)
+
+
 class RepetitionModel(ConversationModel):
     def __init__(self):
         self.frequencies = Counter()
 
-    def train_on_samples(self, samples):
-        for s in samples:
+    def train_on_samples(self, samples_iterable):
+        for s in samples_iterable():
             self.frequencies.update(s['reply'].lower().split())
             for c in s['context']:
                 self.frequencies.update(c[1].lower().split())
-        print(f'Frequency table generated, most frequent: {self.frequencies.most_common(30)}')
+        logger.info(f'Frequency table generated, most frequent: {self.frequencies.most_common(30)}')
 
     def score_answer(self, context: List[Tuple[str, str]], answer: str):
         context_words = set()
