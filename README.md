@@ -1,5 +1,6 @@
 Chat simulator (and analysis) tools
 =====
+__NOTE__: this is a bunch of script to run manually, if you don't know what it is about just ignore it.
 
 These tools allow to generate and store a chat corpus from Telegram, generate word embeddings and then try simulate a conversation based on different approaches. The simulation component is currently very lacking, I'm focusing on the visualization, but have some plans for that as well.
 
