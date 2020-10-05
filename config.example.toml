@@ -19,6 +19,13 @@ description IN ('football club', 'university', 'narnia expats')
 AND timestamp > '2017'
 """
 
+[atomizer]
+utterances_per_atoms = 20
+spam_substrings = [
+  'viagra',
+  'bot@botbot'
+]
+
 [[relevant_groups]]
 description = 'football club'
 id =  28191746
@@ -27,3 +34,4 @@ id =  28191746
 
 description = 'narnia expats'
 id =  104180691
+

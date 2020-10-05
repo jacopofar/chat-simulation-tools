@@ -86,7 +86,7 @@ def conversation_lines(conn):
         yield from curs
 
 
-def process_queue(queue, file):
+def process_queue(queue, spam_substrings, file):
     """Adds the latest conversation atom in the queue to the file.
 
     The queue is expected to be ordered, from the same chat group and without
@@ -111,6 +111,14 @@ def process_queue(queue, file):
     distinct_messages = set(','.join(lines) for _, lines in messages)
     if len(distinct_messages) * 2 < len(messages):
         print(f'Spam skipped: {messages}')
+        return
+    # if any of the messages contains a spammy substring, ignore the whole atom
+    for m in distinct_messages:
+        for s in spam_substrings:
+            if s in m:
+                return
+    # too many bot /commands? skip. Number 2 is a guess, mostly correct
+    if ''.join(distinct_messages).count('/') > 2:
         return
     # change the names with indexed ids
     seen_users = list(seen_users)
@@ -139,27 +147,28 @@ def main():
         user=config['database']['user'],
         host=config['database']['host'],
         password=config['database']['password'])
-    d = deque([], 20)
-    f = open('conversation_atoms.jsonl', 'w')
+    dq = deque([], config['atomizer']['utterances_per_atoms'])
+    spam_substrings = config['atomizer']['spam_substrings']
+    ftarget = open('conversation_atoms.jsonl', 'w')
     latest_group = None
     for msg in conversation_lines(conn):
         # ensure the messages in the queue are from the same group
         if latest_group is None:
             latest_group = msg.group_id
         if msg.group_id != latest_group:
-            process_queue(d, f)
-            d.clear()
+            process_queue(dq, spam_substrings, ftarget)
+            dq.clear()
             latest_group = msg.group_id
         # if the current message is not from the same author as the latest one
         # it is a candidate for a conversation atom
-        if len(d) > 1 and d[-1].user_id != msg.user_id:
-            process_queue(d, f)
+        if len(dq) > 1 and dq[-1].user_id != msg.user_id:
+            process_queue(dq, spam_substrings, ftarget)
 
         # append the message for the next ones
-        d.append(msg)
-        if len(d) > 50:
-            d.popleft()
-    f.close()
+        dq.append(msg)
+        if len(dq) > 50:
+            dq.popleft()
+    ftarget.close()
     print(
         'NOTE: you need to shuffle the file with sort --random-sort or similar'
     )

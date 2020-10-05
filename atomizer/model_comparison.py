@@ -4,6 +4,8 @@ import logging
 from pathlib import Path
 from random import sample, shuffle
 
+from tqdm import tqdm
+
 from atomizer.random_model import RandomModel
 from atomizer.repetition_model import RepetitionModel
 from atomizer.cooccurrence_model import CooccurrenceModel
@@ -53,12 +55,13 @@ def get_validation_atoms(fname: Path, lines_to_skip: int):
 
 def main():
     atoms_file = Path('conversation_atoms.shuffled.jsonl')
+
     total_lines = count_lines(atoms_file)
     logger.info(f'The total file has {total_lines} conversation atoms')
     validation_data = []
     for o in get_validation_atoms(atoms_file, total_lines - VALIDATIONS_ATOMS):
         validation_data.append(o)
-    logger.info(f'Validations data loaded')
+    logger.info(f'Validations data loaded, size: {len(validation_data)}')
     models = [
         ('totally random model', RandomModel()),
         ('detect repetition model', RepetitionModel()),
@@ -69,13 +72,13 @@ def main():
         logger.info('---')
         logger.info(f'Training {model_name}...')
         # allow the model to re-run the training more than once
-        trainer = partial(get_training_atoms, atoms_file, total_lines)
+        trainer = partial(get_training_atoms, atoms_file, total_lines - VALIDATIONS_ATOMS)
         model.train_on_samples(trainer)
         logger.info(f'Evaluating {model_name}...')
 
         correct_answers = 0
 
-        for v in validation_data:
+        for v in tqdm(validation_data):
             alternatives = [s['reply'] for s in sample(validation_data, k=CHOICES_SIZE - 1)]
             context = v['context']
             correct_answer = v['reply']
